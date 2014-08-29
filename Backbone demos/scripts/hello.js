@@ -7,13 +7,21 @@
 
 // Self-executing wrapper
 (function ($) {
-
     /*
      Backbone.sync: Overrides persistence storage with dummy function. This enables use of Model.destroy() without raising an error.
      */
-    Backbone.sync = function(method, model, success, error){
-        success();
-    }
+    // Faking a little bit of Backbone.sync functionallity
+    Backbone.sync = function(method, model, succeeded) {
+        $('#helloResults').append('<div><strong>'+method + ":</strong>  " + model.get("label")+'</div>');
+        if(typeof model.cid != 'undefined') {
+            // It's a freshly made model
+            var cid = model.cid;
+            // ..fake that it's .cid turns into a "real" .id:
+            model.unset('cid').set({id:cid}, {silent:true});
+        }
+        // Oh yes, it all went sooo well ;-)
+        succeeded(model);
+    };
 
     //model
     var Item = Backbone.Model.extend({
